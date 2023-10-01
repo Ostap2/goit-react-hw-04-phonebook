@@ -1,42 +1,34 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import shortid from 'shortid';
 import ContactForm from './Contacts/ContactForm';
 import ContactList from './Contacts/ContactList';
 import Filter from './Filter/Filter';
 import '../index.css';
 
-class App extends Component {
-  state = {
-    contacts: [],
-    name: '',
-    number: '',
-    filter: '',
-  };
+function App() {
+  const [contacts, setContacts] = useState([]);
+  const [name, setName] = useState('');
+  const [number, setNumber] = useState('');
+  const [filter, setFilter] = useState('');
 
-  componentDidMount() {
-    // Отримайте дані контактів з локального сховища
+  useEffect(() => {
     const storedContacts = localStorage.getItem('contacts');
 
     if (storedContacts) {
-      // Якщо дані існують в локальному сховищі, встановіть їх в стан компонента
-      this.setState({ contacts: JSON.parse(storedContacts) });
+      setContacts(JSON.parse(storedContacts));
     }
-  }
+  }, []);
 
-  componentDidUpdate(prevProps, prevState) {
-    // Перевірте, чи стан контактів змінився
-    if (prevState.contacts !== this.state.contacts) {
-      // Збережіть дані контактів в локальному сховищі у форматі JSON
-      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
-    }
-  }
+  useEffect(() => {
+    localStorage.setItem('contacts', JSON.stringify(contacts));
+  }, [contacts]);
 
-  handleChange = (e) => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
-    this.setState({ [name]: value });
+    setName(value);
   };
 
-  handleSubmit = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     const { name, number } = this.state;
 
@@ -45,7 +37,7 @@ class App extends Component {
       return;
     }
 
-    if (this.state.contacts.some((contact) => contact.name === name)) {
+    if (contacts.some((contact) => contact.name === name)) {
       alert(`${name} is already in contacts.`);
       return;
     }
@@ -56,68 +48,56 @@ class App extends Component {
       number,
     };
 
-    this.setState((prevState) => ({
-      contacts: [contact, ...prevState.contacts],
-      name: '',
-      number: '',
-    }));
+    setContacts((prevContacts) => [contact, ...prevContacts]);
+    setName('');
+    setNumber('');
   };
 
-  handleFilterChange = (e) => {
-    this.setState({ filter: e.target.value });
+  const handleFilterChange = (e) => {
+    setFilter(e.target.value);
   };
 
-  filterContacts = () => {
-    const { contacts, filter } = this.state;
+  const filterContacts = () => {
     return contacts.filter((contact) =>
       contact.name.toLowerCase().includes(filter.toLowerCase())
     );
   };
 
-  deleteContact = (contactIndex) => {
-    this.setState((prevState) => ({
-      contacts: prevState.contacts.filter((_, index) => index !== contactIndex),
-    }));
+  const deleteContact = (contactIndex) => {
+    setContacts((prevContacts) =>
+      prevContacts.filter((_, index) => index !== contactIndex)
+    );
   };
-  addContact = (newContact) => {
 
-    const isDuplicateName = this.state.contacts.some(
+  const addContact = (newContact) => {
+    const isDuplicateName = contacts.some(
       (contact) => contact.name === newContact.name
     );
 
     if (isDuplicateName) {
       console.log('Це імя вже існує');
-      return; 
+      return;
     }
 
-    this.setState((prevState) => ({
-      contacts: [newContact, ...prevState.contacts],
-    }));
+    setContacts((prevContacts) => [newContact, ...prevContacts]);
   };
-  render() {
-    const { name, number, filter } = this.state;
-    const filteredContacts = this.filterContacts();
 
-    return (
-      <div>
-        <h1>Phonebook</h1>
-        <ContactForm
-          name={name}
-          number={number}
-          handleChange={this.handleChange}
-          handleSubmit={this.handleSubmit}
-          onSubmit={this.addContact}
-        />
+  return (
+    <div>
+      <h1>Phonebook</h1>
+      <ContactForm
+        name={name}
+        number={number}
+        handleChange={handleChange}
+        handleSubmit={handleSubmit}
+        onSubmit={addContact}
+      />
 
-        <h2>Contacts</h2>
-        <Filter filter={filter} handleFilterChange={this.handleFilterChange} />
-        <ContactList
-          contacts={filteredContacts}
-          deleteContact={this.deleteContact}
-        />
-      </div>
-    );
-  }
+      <h2>Contacts</h2>
+      <Filter filter={filter} handleFilterChange={handleFilterChange} />
+      <ContactList contacts={filterContacts()} deleteContact={deleteContact} />
+    </div>
+  );
 }
 
 export default App;
