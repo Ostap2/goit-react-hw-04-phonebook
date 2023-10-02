@@ -74,7 +74,7 @@ function App() {
     );
 
     if (isDuplicateName) {
-      console.log('Це імя вже існує');
+      console.log('Цей номер вже існує');
       return;
     }
 
