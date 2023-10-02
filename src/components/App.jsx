@@ -30,27 +30,28 @@ function App() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
+  
     if (name === '' || number === '') {
       alert('Please fill in all fields.');
       return;
     }
-
+  
     if (contacts.some((contact) => contact.name === name)) {
       alert(`${name} is already in contacts.`);
       return;
     }
-
+  
     const contact = {
       id: shortid.generate(),
       name,
       number,
     };
-
+  
     setContacts((prevContacts) => [contact, ...prevContacts]);
     setName('');
     setNumber('');
   };
+  
 
   const handleFilterChange = (e) => {
     setFilter(e.target.value);
@@ -74,7 +75,7 @@ function App() {
     );
 
     if (isDuplicateName) {
-      console.log('Цей номер вже існує');
+      console.log('Це імя вже існує');
       return;
     }
 
