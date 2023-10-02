@@ -30,7 +30,6 @@ function App() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // const { name, number } = this.state;
 
     if (name === '' || number === '') {
       alert('Please fill in all fields.');
