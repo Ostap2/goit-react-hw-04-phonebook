@@ -30,28 +30,28 @@ function App() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-  
+    const { name, number } = this.state;
+
     if (name === '' || number === '') {
       alert('Please fill in all fields.');
       return;
     }
-  
+
     if (contacts.some((contact) => contact.name === name)) {
       alert(`${name} is already in contacts.`);
       return;
     }
-  
+
     const contact = {
       id: shortid.generate(),
       name,
       number,
     };
-  
+
     setContacts((prevContacts) => [contact, ...prevContacts]);
     setName('');
     setNumber('');
   };
-  
 
   const handleFilterChange = (e) => {
     setFilter(e.target.value);
