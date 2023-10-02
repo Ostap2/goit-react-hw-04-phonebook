@@ -24,9 +24,10 @@ function App() {
   }, [contacts]);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const value = e.target.value;
     setName(value);
   };
+  
 
   const handleSubmit = (e) => {
     e.preventDefault();
