@@ -27,7 +27,6 @@ function App() {
     const value = e.target.value;
     setName(value);
   };
-  
 
   const handleSubmit = (e) => {
     e.preventDefault();

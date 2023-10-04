@@ -1,71 +1,63 @@
-// ContactForm.jsx
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 
-class ContactForm extends Component {
-  state = {
-    name: '',
-    number: '',
-  };
+function ContactForm({ onSubmit }) {
+  const [name, setName] = useState('');
+  const [number, setNumber] = useState('');
 
-  handleChange = (e) => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
-    this.setState({ [name]: value });
+    if (name === 'name') {
+      setName(value);
+    } else if (name === 'number') {
+      setNumber(value);
+    }
   };
 
-  handleSubmit = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    const { name, number } = this.state;
 
     if (name === '' || number === '') {
       alert('Please fill in all fields.');
       return;
     }
 
-    this.props.onSubmit({ ...this.state });
+    onSubmit({ name, number });
 
-    this.setState({ name: '', number: '' });
+    setName('');
+    setNumber('');
   };
 
-  render() {
-    const { name, number } = this.state;
-
-    return (
-      <form onSubmit={this.handleSubmit}>
-        <label>
-          Name:
-          <input
-  type="text"
-  id="name"
-  name="name"
-  value={name}
-  onChange={this.handleChange}
-  pattern="^[a-zA-Zа-яА-Я]+([' \-][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*$"
-  title="Name may contain only letters, apostrophe, dash and spaces."
-  required
-  autoComplete="off"
-/>
-
-        </label>
-        <label>
-          Phone Number:
-          <input
-  type="text"
-  id="number"
-  name="number"
-  value={number}
-  onChange={this.handleChange}
-  pattern="[0-9\-]+"
-  title="Phone number must be digits"
-  required
-  autoComplete="off"
-/>
-
-
-        </label>
-        <button type="submit">Add Contact</button>
-      </form>
-    );
-  }
+  return (
+    <form onSubmit={handleSubmit}>
+      <label>
+        Name:
+        <input
+          type="text"
+          name="name"
+          value={name}
+          onChange={handleChange}
+          pattern="^[a-zA-Zа-яА-Я]+([' \-][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*$"
+          title="Name may contain only letters, apostrophe, dash and spaces."
+          required
+          autoComplete="off"
+        />
+      </label>
+      <label>
+        Phone Number:
+        <input
+          type="text"
+          name="number"
+          value={number}
+          onChange={handleChange}
+          pattern="[0-9\-]+"
+          title="Phone number must be digits"
+          required
+          autoComplete="off"
+        />
+      </label>
+      <button type="submit">Add Contact</button>
+    </form>
+  );
 }
 
 export default ContactForm;
